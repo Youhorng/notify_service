@@ -1,9 +1,9 @@
 import os 
 import logging 
 from datetime import datetime 
-import telegram 
-from telegram.constants import ParseMode
-from dotenv import load_dotenv
+import telegram  # type: ignore
+from telegram.constants import ParseMode # type: ignore
+from dotenv import load_dotenv # type: ignore
 
 # Load environment variables from .env file
 load_dotenv()
@@ -83,7 +83,7 @@ class TelegramService():
         return f"""
 {emoji} <b>FRAUD ALERT</b> {emoji}
 
-<b>Transaction ID:</b> {data.get('transaction_id', 'Unknown')}
+<b>Transaction Number:</b> {data.get('transaction_number', 'Unknown')}
 <b>Amount:</b> {amount}
 <b>Fraud Probability:</b> {probability_pct}
 <b>Risk Level:</b> {risk_level}

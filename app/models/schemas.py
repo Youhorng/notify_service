@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator # type: ignore
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 
 # Request Schema - for incoming notification requests
 class NotificationRequest(BaseModel):
-    transaction_id: str = Field(..., description="Unique identifier for the transaction")
+    transaction_number: str = Field(..., description="Unique identifier for the transaction")
     transaction_amount: float = Field(..., description="Amount of the transaction")
     fraud_probability: float = Field(..., ge=0, le=1, description="Fraud probability score (0-1)")
     is_nighttime: Optional[bool] = Field(None, description="True if the transaction is made at night, False otherwise")
@@ -13,10 +13,10 @@ class NotificationRequest(BaseModel):
     job: Optional[str] = Field(None, description="Job of the cardholder")
     state: Optional[str] = Field(None, description="State where the transaction occurred")
     
-    @validator('transaction_id')
+    @validator('transaction_number')
     def transaction_id_must_not_be_empty(cls, v):
         if not v or not v.strip():
-            raise ValueError('transaction_id cannot be empty')
+            raise ValueError('transaction_number cannot be empty')
         return v
     
     @validator('transaction_amount')
@@ -28,7 +28,7 @@ class NotificationRequest(BaseModel):
 # Response schema for notifications
 class NotificationBase(BaseModel):
     notification_id: str = Field(..., description="Notification database ID")
-    transaction_id: str = Field(..., description="Transaction ID")
+    transaction_number: str = Field(..., description="Transaction ID")
     status: str = Field(..., description="Notification status (pending, sent, failed)")
     created_at: datetime = Field(..., description="When the notification was created")
     
@@ -36,7 +36,7 @@ class NotificationBase(BaseModel):
         schema_extra = {
             "example": {
                 "notification_id": "64a82c3e9b72f5d8e9f82c31",
-                "transaction_id": "TX123456789",
+                "transaction_number": "TX123456789",
                 "status": "sent",
                 "created_at": "2023-10-15T14:30:00.000Z"
             }
@@ -68,7 +68,7 @@ class NotificationDetail(NotificationBase):
 class NotificationResponse(BaseModel):
     success: bool = Field(..., description="Indicates if the notification was successfully sent")
     message: str = Field(..., description="Message indicating the status of the notification")
-    notification_id: Optional[str] = Field(None, description="Notification ID")
+    notification_number: Optional[str] = Field(None, description="Notification ID")
     status: Optional[str] = Field(None, description="Notification status")
     error: Optional[str] = Field(None, description="Error message if any")
     
@@ -77,7 +77,7 @@ class NotificationResponse(BaseModel):
             "example": {
                 "success": True,
                 "message": "Notification sent successfully",
-                "notification_id": "64a82c3e9b72f5d8e9f82c31",
+                "notification_number": "64a82c3e9b72f5d8e9f82c31",
                 "status": "sent"
             }
         }

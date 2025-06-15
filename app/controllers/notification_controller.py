@@ -18,7 +18,7 @@ Process a fraud notification:
 async def send_fraud_notification(data):
     try:
         # Check if notification already exists
-        existing = await get_notification_by_txn_id(data.get("transaction_id"))
+        existing = await get_notification_by_txn_id(data.get("transaction_number"))
 
         if existing:
             return {
@@ -30,7 +30,7 @@ async def send_fraud_notification(data):
 
         # 1. Create and save notification with pending status 
         notification = {
-            "transaction_id": data["transaction_id"],
+            "transaction_number": data["transaction_number"],
             "transaction_amount": data["transaction_amount"],
             "fraud_probability": data["fraud_probability"],
             "category": data.get("category"),
@@ -116,7 +116,7 @@ async def get_notification_status(id):
         # Return a simplified response with just the essential information
         return {
             "notification_id": notification["_id"],
-            "transaction_id": notification["transaction_id"],
+            "transaction_number": notification["transaction_number"],
             "status": notification["status"],
             "created_at": notification.get("created_at"),
             "sent_at": notification.get("sent_at"),
@@ -144,7 +144,7 @@ async def list_all_notifications(page=1, limit=10):
         for notification in result["notifications"]:
             simplified_notifications.append({
                 "notification_id": notification["_id"],
-                "transaction_id": notification["transaction_id"],
+                "transaction_number": notification["transaction_number"],
                 "status": notification["status"],
                 "created_at": notification.get("created_at"),
                 "sent_at": notification.get("sent_at")

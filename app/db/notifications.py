@@ -26,7 +26,7 @@ async def connect_to_mongodb():
         db = client[MONGODB_DB]
 
         # Create index for faster lookups 
-        await db.notifications.create_index("transaction_id", unique=True)
+        await db.notifications.create_index("transaction_number", unique=True)
 
         logging.info("Connected to MongoDB")
 
@@ -86,7 +86,7 @@ async def get_notification_by_txn_id(id):
         
         # If not found or not a valid ObjectId, try by transaction_id
         if not notification:
-            notification = await db.notifications.find_one({"transaction_id": id})
+            notification = await db.notifications.find_one({"transaction_number": id})
         
         # Convert ObjectId to string for easier handling
         if notification:
@@ -125,7 +125,7 @@ async def update_notification(id, update_data):
         
         # Try updating by transaction_id
         result = await db.notifications.update_one(
-            {"transaction_id": id},
+            {"transaction_number": id},
             {"$set": update_data}
         )
         
